@@ -17,6 +17,7 @@
     "glob": "^7.1.2",
     "glob-promise": "^3.1.0",
     "log-symbols": "^1.0.2",
+    "meow": "^3.7.0",
     "mz": "^2.6.0",
     "one-liner": "^1.0.3",
     "semver": "^5.3.0",

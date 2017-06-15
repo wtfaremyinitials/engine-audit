@@ -5,8 +5,22 @@ const logSymbols = require('log-symbols')
 const semver = require('semver')
 const semverIntersect = require('semver-set').intersect
 const glob = require('glob-promise')
+const meow = require('meow')
 const ol = require('one-liner')
 const featuresUsed = require('js-features-used')
+
+const cli = meow(
+    `
+    Usage
+      $ engine-audit
+
+    Examples
+      $ engine-audit                # Check all .js files
+      $ engine-audit 'dist/**/*.js' # Check only compiled .js files
+`
+)
+
+const userGlob = cli.input[0] || '**/*.js'
 
 async function main() {
     const cwd = process.cwd()
@@ -31,7 +45,7 @@ async function main() {
         )
     }
 
-    const paths = (await glob('**/*.js')).filter(
+    const paths = (await glob(userGlob)).filter(
         p => !p.startsWith('node_modules')
     )
 
