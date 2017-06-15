@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "globby": "^6.1.0",
+    "import-cwd": "^2.1.0",
     "js-features-used": "^0.0.1",
     "log-symbols": "^1.0.2",
     "meow": "^3.7.0",

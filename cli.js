@@ -7,6 +7,7 @@ const semverIntersect = require('semver-set').intersect
 const glob = require('globby')
 const meow = require('meow')
 const ol = require('one-liner')
+const importSafe = require('import-cwd').silent
 const featuresUsed = require('js-features-used')
 
 const cli = meow(
@@ -40,7 +41,13 @@ const quiet = !!cli.flags.quiet
 
 async function main() {
     const cwd = process.cwd()
-    const pkg = require(path.resolve(cwd, 'package.json'))
+    const pkg = importSafe(path.resolve(cwd, 'package.json'))
+
+    if (!pkg) {
+        console.log(`${logSymbols.error} Couldn't find a package.json file in "${cwd}"`)
+        process.exit(3)
+    }
+
     const engines = pkg.engines
 
     if (!engines) {
