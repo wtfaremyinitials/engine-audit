@@ -4,7 +4,7 @@ const fs = require('mz/fs')
 const logSymbols = require('log-symbols')
 const semver = require('semver')
 const semverIntersect = require('semver-set').intersect
-const glob = require('glob-promise')
+const glob = require('globby')
 const meow = require('meow')
 const ol = require('one-liner')
 const featuresUsed = require('js-features-used')
@@ -12,15 +12,28 @@ const featuresUsed = require('js-features-used')
 const cli = meow(
     `
     Usage
-      $ engine-audit
+      $ engine-audit [ files glob ]
+
+    Options
+      $ --ignore='<glob>', -i='<glob>' A glob of files to ignore
+      $ --verbose, -v                  Verbose output mode
 
     Examples
       $ engine-audit                # Check all .js files
       $ engine-audit 'dist/**/*.js' # Check only compiled .js files
-`
+      $ engine-audit -i='{**/test.js,**/*.test.js}' # Ignore tests
+`,
+    {
+        alias: {
+            i: 'ignore',
+            v: 'verbose',
+        },
+    }
 )
 
-const userGlob = cli.input[0] || '**/*.js'
+const includeGlob = cli.input[0] || '**/*.js'
+const ignoreGlob = cli.flags.ignore || ''
+const verbose = !!cli.flags.verbose
 
 async function main() {
     const cwd = process.cwd()
@@ -45,9 +58,16 @@ async function main() {
         )
     }
 
-    const paths = (await glob(userGlob)).filter(
-        p => !p.startsWith('node_modules')
-    )
+    const includePaths = await glob(includeGlob)
+    const ignorePaths = await glob(ignoreGlob)
+
+    const paths = includePaths
+        .filter(p => !p.startsWith('node_modules'))
+        .filter(p => ignorePaths.indexOf(p) == -1)
+
+    if (verbose) {
+        console.log('checking: ' + paths)
+    }
 
     let compatible = true
 
@@ -81,7 +101,7 @@ async function main() {
     }
 
     if (compatible) {
-        console.log(`${logSymbols.success} No incompatibilities found`)
+        console.log(`${logSymbols.success} No engine incompatibilities found`)
     }
 
     process.exit(compatible ? 0 : 2)
