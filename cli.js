@@ -17,6 +17,7 @@ const cli = meow(
     Options
       $ --ignore='<glob>', -i='<glob>' A glob of files to ignore
       $ --verbose, -v                  Verbose output mode
+      $ --quiet, -q                    Don't print on success
 
     Examples
       $ engine-audit                # Check all .js files
@@ -27,6 +28,7 @@ const cli = meow(
         alias: {
             i: 'ignore',
             v: 'verbose',
+            q: 'quiet',
         },
     }
 )
@@ -34,6 +36,7 @@ const cli = meow(
 const includeGlob = cli.input[0] || '**/*.js'
 const ignoreGlob = cli.flags.ignore || ''
 const verbose = !!cli.flags.verbose
+const quiet = !!cli.flags.quiet
 
 async function main() {
     const cwd = process.cwd()
@@ -100,7 +103,7 @@ async function main() {
         }
     }
 
-    if (compatible) {
+    if (compatible && !quiet) {
         console.log(`${logSymbols.success} No engine incompatibilities found`)
     }
 
