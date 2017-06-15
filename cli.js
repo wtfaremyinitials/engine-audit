@@ -6,7 +6,7 @@ const semver = require('semver')
 const semverIntersect = require('semver-set').intersect
 const glob = require('glob-promise')
 const ol = require('one-liner')
-const { featuresUsed } = require('js-features-used')
+const featuresUsed = require('js-features-used')
 
 async function main() {
     const cwd = process.cwd()
