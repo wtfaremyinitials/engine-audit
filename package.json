@@ -1,6 +1,6 @@
 {
   "name": "engine-audit",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A CLI tool to keep your package's engine field up to date",
   "repository": "https://github.com/wtfaremyinitials/engine-audit.git",
   "author": "Will Franzen <wtfranzen@gmail.com>",
