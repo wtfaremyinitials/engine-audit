@@ -44,7 +44,9 @@ async function main() {
     const pkg = importSafe(path.resolve(cwd, 'package.json'))
 
     if (!pkg) {
-        console.log(`${logSymbols.error} Couldn't find a package.json file in "${cwd}"`)
+        console.log(
+            `${logSymbols.error} Couldn't find a package.json file in "${cwd}"`
+        )
         process.exit(3)
     }
 
